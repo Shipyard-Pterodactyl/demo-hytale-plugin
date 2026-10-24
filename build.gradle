@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+}
+
+group = 'demo'
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://maven.hytale.com/release' }
+    maven { url = 'https://maven.hytale.com/pre-release' }
+}
+
+dependencies {
+    compileOnly "com.hypixel.hytale:Server:${hytaleApi}"
+}
+
+java {
+    toolchain { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+processResources {
+    inputs.property 'version', project.version
+    inputs.property 'serverVersion', project.property('serverVersion')
+    filesMatching('manifest.json') { expand(version: project.version, serverVersion: project.property('serverVersion')) }
+}
+
+jar {
+    archiveBaseName = 'DemoHytale'
+}

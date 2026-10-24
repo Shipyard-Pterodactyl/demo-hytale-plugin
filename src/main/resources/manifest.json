@@ -1,0 +1,8 @@
+{
+  "Group": "Demo",
+  "Name": "DemoHytale",
+  "Version": "${version}",
+  "Description": "Shipyard test plugin",
+  "ServerVersion": "${serverVersion}",
+  "Main": "demo.hytale.DemoHytale"
+}
