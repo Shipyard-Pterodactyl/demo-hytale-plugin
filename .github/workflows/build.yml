@@ -1,0 +1,36 @@
+# Written by Shipyard: builds on every push and sends the build to the panel.
+name: Build
+on:
+  push:
+  workflow_dispatch:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: gradle
+      - name: Build
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: build/libs/*.jar
+          if-no-files-found: error
+      - name: Send the build to the panel
+        if: github.event_name != 'pull_request'
+        uses: Shipyard-Pterodactyl/shipyard-action@v1
+        with:
+          panel-url: https://incidents-skill-keith-attendance.trycloudflare.com
+          files: build/libs/*.jar
+        env:
+          SHIPYARD_SECRET: ${{ secrets.SHIPYARD_SECRET }}
